@@ -1,0 +1,19 @@
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // Warning: this repository is going to shut down soon
+        maven {
+            url '/Users/Vivorth/AndroidStudioProjects/MyApplication/my_flutter/build/host/outputs/repo'
+        }
+        maven {
+            url "https://storage.googleapis.com/download.flutter.io"
+        }
+    }
+}
+rootProject.name = "My Application"
+include ':app'
+include ':bill24sdk'
+include ':testmod'
+include ':bill24sk'

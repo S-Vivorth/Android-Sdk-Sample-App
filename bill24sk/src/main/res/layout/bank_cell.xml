@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#ffffff"
+
+    >
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#b7b7b7"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="15dp">
+        <androidx.cardview.widget.CardView
+            app:cardElevation="0dp"
+            app:cardCornerRadius="6dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp">
+
+            <ImageView
+                android:id="@+id/bankImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+
+                android:background="@drawable/acleda" />
+        </androidx.cardview.widget.CardView>
+
+
+        <TextView
+            android:id="@+id/bankName"
+            android:layout_width="132dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:text="ACLEDA"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/fee"
+            android:layout_width="129dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="0.00 USD"
+            android:textAlignment="textEnd"
+            android:textColor="#000000" />
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/radioBox"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/ic_baseline_radio_button_unchecked_24" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#b7b7b7"
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>
