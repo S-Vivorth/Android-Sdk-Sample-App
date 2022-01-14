@@ -24,10 +24,11 @@ class MainActivity : AppCompatActivity() {
 //            startActivity(
 //            FlutterActivity.createDefaultIntent(this)
 //        )
-            var bottomsheetFrag = bottomSheetController(supportFragmentManager = supportFragmentManager,paylater = pay_later(),
-                sessionId = "JOTS2Bwd201SwxrbdxCS68sHRYqco/vrXQVp3pG5qPb7qB/BQI6Pa9G8SxuQJkjUv1nWrptWWQdu0hej0Ib0zfhYeDt0ltTCRlbmpRP98TE=",
+
+            val bottomsheetFrag = bottomSheetController(supportFragmentManager = supportFragmentManager,paylater = pay_later(),
+                sessionId = "JCvV1v2zSugi+0Glw9Qno+iTfiNh96LlEoMvx0x5LURKk89rbUrfqflXtY98AiUY+Mc4bk667dK/W4bjfGyMh0XtRpGJLWboWQ8nQeHoiYU=",
                 clientID = "W/GkvceL7nCjOF/v+fu5MA+epIQMXMJedMeXvbvEn7I=", activity = this
-            ,payment_succeeded = payment_succeeded(),language = "en")
+            ,payment_succeeded = payment_succeeded(),language = "kh")
 
             bottomsheetFrag.show(supportFragmentManager,"bottomsheet")
         showtoast(this)

@@ -17,15 +17,15 @@
             android:backgroundTint="#4FB329" />
 
         <TextView
-            android:textColor="#121212"
-            android:textStyle="bold"
             android:id="@+id/pmsucceededLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
             android:text="Payment Succeeded"
-            android:textSize="20dp" />
+            android:textColor="#121212"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <RelativeLayout
 
@@ -34,21 +34,21 @@
             android:layout_margin="10dp">
 
             <TextView
-                android:textColor="#121212"
-
                 android:id="@+id/orderIdLabel"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Order Id" />
+                android:text="Order Id"
+                android:textColor="#121212" />
 
             <TextView
-                android:textColor="#121212"
-
                 android:id="@+id/orderIdValue"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="Label" />
+                android:text="Label"
+                android:textColor="#121212" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -58,21 +58,21 @@
             android:layout_margin="10dp">
 
             <TextView
-                android:textColor="#121212"
-
                 android:id="@+id/pmLabel"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Payment method" />
+                android:text="Payment method"
+                android:textColor="#121212" />
 
             <TextView
-                android:textColor="#121212"
-
                 android:id="@+id/pmMethodValue"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="Label" />
+                android:text="Label"
+                android:textColor="#121212" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -81,21 +81,21 @@
             android:layout_margin="10dp">
 
             <TextView
-                android:textColor="#121212"
-
                 android:id="@+id/bankRefLabel"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bank ref." />
+                android:text="Bank ref."
+                android:textColor="#121212" />
 
             <TextView
-                android:textColor="#121212"
-
                 android:id="@+id/bankRefvalue"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="label" />
+                android:text="label"
+                android:textColor="#121212" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -104,32 +104,32 @@
             android:layout_margin="10dp">
 
             <TextView
-                android:textColor="#121212"
-
                 android:id="@+id/totalLabel"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total" />
+                android:text="Total"
+                android:textColor="#121212" />
 
             <TextView
-                android:textColor="#121212"
-
                 android:id="@+id/totalValue"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="Label" />
+                android:text="Label"
+                android:textColor="#121212" />
         </RelativeLayout>
 
         <TextView
-            android:textStyle="bold"
-            android:textColor="#04B0E3"
             android:id="@+id/continueShoppingBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="15dp"
-            android:text="Continue Shopping" />
+            android:text="Continue Shopping"
+            android:textColor="#04B0E3"
+            android:textStyle="bold" />
     </LinearLayout>
 
 

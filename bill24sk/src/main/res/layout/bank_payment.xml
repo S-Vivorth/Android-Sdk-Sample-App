@@ -8,6 +8,7 @@
     android:layout_height="40dp"
     android:backgroundTint="#ffffff"
     android:id="@+id/relative"
+    android:clickable="true"
     >
     <View
         android:layout_width="60dp"

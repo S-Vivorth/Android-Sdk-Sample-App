@@ -6,13 +6,13 @@
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent">-->
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-        >
+    >
     <Button
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -59,13 +59,14 @@
         android:layout_below="@id/pmMethodLabel"
         android:background="#121212"
         />
-    <LinearLayout
+    <RelativeLayout
         android:layout_marginTop="0.02dp"
         android:layout_below="@+id/pmMethodLabel"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linear"
+        android:layout_above="@id/linearlayout"
         >
 <!--        <Button-->
 <!--            android:id="@+id/bottomsheetbtn"-->
@@ -75,12 +76,12 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/bankRecycler"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="wrap_content"
 
-             />
+            />
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
         <LinearLayout
@@ -90,6 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
@@ -109,21 +111,32 @@
                     android:text="Save my account"
                     />
             </LinearLayout>
-            <Button
+            <androidx.cardview.widget.CardView
+                app:cardElevation="0dp"
                 android:layout_alignParentBottom="true"
-                android:enabled="false"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="Confirm"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/purple_700"
-                android:alpha="0.5"
-                android:id="@+id/confirmbtn"
-                android:textAllCaps="false"
-                />
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <com.marozzi.roundbutton.RoundButton
+                    android:textSize="18dp"
+                    android:id="@+id/confirmbtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:rb_text_color="@color/white"
+                    android:alpha="0.5"
+                    app:rb_background_color="@color/purple_700"
+                    android:enabled="false"
+                    android:text="Confirm"
+                    app:rb_corner_radius="30px"
+
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+            </androidx.cardview.widget.CardView>
+
     </LinearLayout>
 
     </RelativeLayout>

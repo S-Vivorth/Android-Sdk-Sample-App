@@ -13,10 +13,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Base64
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -28,6 +25,7 @@ import kotlinx.android.synthetic.main.bank_cell.view.*
 import kotlinx.android.synthetic.main.otp.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.res.ResourcesCompat
+import com.marozzi.roundbutton.RoundButton
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -37,10 +35,10 @@ import javax.crypto.SecretKey
 import kotlin.math.floor
 
 
-class otp(paylater:Activity,bankImage:String,bankName:String,accNo:String,activity:Activity,
+class otp(bankImage:String,bankName:String,accNo:String,activity:Activity,
 validate_token:String,bankID:String,bottomSheetController: bottomSheetController,
-          payment_succeeded:Activity,language:String,verifybtncolor:String,sessionId:String,clientId:String): BottomSheetDialogFragment() {
-    var paylater:Activity = paylater
+          payment_succeeded:Activity,language:String,verifyBtnStyle:JSONObject,sessionId:String,clientId:String,
+        orderID:String,socketID:String): BottomSheetDialogFragment() {
     var bankImage = bankImage
     var bankName = bankName
     var accNo = accNo
@@ -52,11 +50,12 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
     val url:String = "https://sdkapi-demo.bill24.net"
     val payment_succeeded = payment_succeeded
     var language:String = language
-    var verifybtncolor:String = verifybtncolor
+    var verifyBtnStyle:JSONObject = verifyBtnStyle
     var sessionId = sessionId
     var clientId = clientId
     var custom_font = ResourcesCompat.getFont(activity,R.font.kh9)
-
+    var orderID = orderID
+    var socketID = socketID
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -72,7 +71,7 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
     }
     fun timer(){
         resendBtn.typeface = custom_font
-        val timer = object : CountDownTimer(8000,1000){
+        val timer = object : CountDownTimer(31000,1000){
             override fun onTick(millisUntilFinished: Long) {
                 if ((millisUntilFinished/1000).toInt() < 10) {
                     resendBtn.text = "0:0"+(millisUntilFinished/1000).toInt().toString()
@@ -163,9 +162,11 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
 
+
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sendProcessing()
         otpverification.typeface = custom_font
         enterOtpText.typeface = custom_font
         dontreceive.typeface = custom_font
@@ -181,11 +182,20 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
         if (language != "en"){
             verify_btn.text = "បញ្ជូន"
         }
-        verify_btn.setBackgroundColor(Color.parseColor(verifybtncolor))
+        val builder = RoundButton.newBuilder()
+        builder.withBackgroundColor(Color.parseColor(verifyBtnStyle.optString("background_color")))
+            .withTextColor(Color.parseColor(verifyBtnStyle.
+            optString("text_color")))
+            .withCornerColor(Color.parseColor(verifyBtnStyle.
+            optString("border_color")))
+            .withCornerWidth(verifyBtnStyle.
+            optString("border_size").split("p")[0].toInt()*2)
+        verify_btn.setCustomizations(builder)
         otpbankName.typeface = custom_font
         otpAccNo.typeface = custom_font
         otpbankName.text = bankName
         otpAccNo.text = accNo
+
         activity.runOnUiThread {
             kotlin.run {
                 context.let { Glide.with(it!!).load(bankImage).centerCrop().into(otpbankimage) }
@@ -196,7 +206,7 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
 
         val otp = otpEditText.text
         resendBtn.paintFlags = Paint.UNDERLINE_TEXT_FLAG or resendBtn.paintFlags
-        timer()
+//        timer()
 
 
     }
@@ -271,8 +281,8 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
                             ).toString()
                         }
                         Log.d("Decryptedd",decrypted_data.toString())
-                        val intent = Intent(activity,payment_succeeded::class.java)
-
+                        val intent = Intent()
+                        intent.setClassName("com.example.myapplication","$payment_succeeded")
                         val data_to_pass = arrayOf<String>(JSONObject(decrypted_data).optJSONObject("tran_data")!!
                             .optString("trans_id"),
                             JSONObject(decrypted_data).optJSONObject("tran_data")!!
@@ -301,6 +311,55 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
                     }
                 }
 
+            }
+
+        })
+    }
+    fun sendProcessing(){
+        var json:String
+        val data = data()
+        val secretKey = data.makePbeKey("admin".toCharArray())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            json = """
+                {"data" : "${java.util.Base64.getEncoder().encodeToString(data.cbcEncrypt(secretKey!!,"""
+                    {"event":"payment_processing", "message":"$socketID"}
+                """.trimIndent()))}"}
+            """.trimIndent()
+        }
+        else{
+            json = """
+                {"data" : "${Base64.encodeToString(data.cbcEncrypt(secretKey!!,"""
+                    {"event":"payment_processing", "message":"$socketID"}
+                """.trimIndent()),Base64.DEFAULT)}"
+            """.trimIndent()
+        }
+        val client = OkHttpClient()
+        val answer = JSONObject(json)
+        val mediaTypeJson = "application/json; charset=utf-8".toMediaType()
+        var request:Request
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            request = Request.Builder().header("token",java.util.Base64.getEncoder().encodeToString(data.cbcEncrypt(secretKey,"""
+            {"app_id":"sdk","room_name":"${orderID}"}
+        """.trimIndent())).toString())
+                .header("Accept","application/json")
+                .url("https://socketio-demo.bill24.net/socket/send").post(answer.toString().toRequestBody(mediaTypeJson))
+                .build()
+        }
+        else{
+            request = Request.Builder().header("token",Base64.encodeToString(data.cbcEncrypt(secretKey,"""
+            {"app_id":"sdk","room_name":"${orderID}"}
+        """.trimIndent()),Base64.DEFAULT).toString())
+                .header("Accept","application/json")
+                .url("https://socketio-demo.bill24.net/socket/send").post(answer.toString().toRequestBody(mediaTypeJson))
+                .build()
+        }
+        client.newCall(request).enqueue(object :Callback{
+            override fun onFailure(call: Call, e: IOException) {
+
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                Log.d("abc",response.body!!.string())
             }
 
         })

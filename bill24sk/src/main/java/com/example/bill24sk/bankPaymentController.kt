@@ -2,9 +2,11 @@ package com.example.bill24sk
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
@@ -32,23 +34,24 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
+import java.net.NetworkInterface
 import java.net.URI
 import java.util.*
 import javax.crypto.SecretKey
 import kotlin.collections.ArrayList
 
 
-class bankPaymentController(fragmentManager: FragmentManager,paylater:Activity,formdata:String,payment_succeeded:Activity,orderID:String,activity: Activity,
-bottomSheetController: bottomSheetController) : BottomSheetDialogFragment() {
-    var supportFragmentManager: FragmentManager = fragmentManager
-    var paylater:Activity = paylater
+class bankPaymentController(formdata:String,payment_succeeded:Activity,orderID:String,activity: Activity,
+bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialogFragment() {
+
     var formdata = formdata
     val payment_succeeded:Activity = payment_succeeded
     val orderID:String = orderID
     val uri = URI.create("https://socketio-demo.bill24.net/")
     val activity = activity
     var bottomSheetController = bottomSheetController
-    val url = "http://192.168.197.6:60096"
+    val url = "https://sdkapi-demo.bill24.net"
+    val socketID = socketID
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,6 +71,7 @@ bottomSheetController: bottomSheetController) : BottomSheetDialogFragment() {
             bottomSheetController.bankPaymentIsOpened = false
         }
     }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return BottomSheetDialog(requireContext(), theme).apply {
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -79,17 +83,35 @@ bottomSheetController: bottomSheetController) : BottomSheetDialogFragment() {
         var json:String
         val data = data()
         val secretKey = data.makePbeKey("admin".toCharArray())
+        val a = NetworkInterface.getNetworkInterfaces()
+            .toList()
+            .find { networkInterface -> networkInterface.name.equals("wlan0", ignoreCase = true) }
+            ?.hardwareAddress
+            ?.joinToString(separator = ":") { byte -> "%02X".format(byte)
+            }
+            Log.d("MacAddresss",a.toString())
+//        val wifiMan =
+//            activity.applicationContext!!.getSystemService(Context.WIFI_SERVICE) as WifiManager
+//        val wifiInf = wifiMan.connectionInfo
+//        val ipAddress = wifiInf.ipAddress
+//        val ip = String.format(
+//            "%d.%d.%d.%d",
+//            ipAddress and 0xff,
+//            ipAddress shr 8 and 0xff,
+//            ipAddress shr 16 and 0xff,
+//            ipAddress shr 24 and 0xff
+//        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             json = """
                 {"data" : "${java.util.Base64.getEncoder().encodeToString(data.cbcEncrypt(secretKey!!,"""
-                    {"event":"payment_processing", "message":""}
+                    {"event":"payment_processing", "message":"$socketID"}
                 """.trimIndent()))}"}
             """.trimIndent()
         }
         else{
             json = """
                 {"data" : "${Base64.encodeToString(data.cbcEncrypt(secretKey!!,"""
-                    {"event":"payment_processing", "message":""}
+                    {"event":"payment_processing", "message":"$socketID"}
                 """.trimIndent()),Base64.DEFAULT)}"
             """.trimIndent()
         }
@@ -127,6 +149,7 @@ bottomSheetController: bottomSheetController) : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sendProcessing()
+        bottomSheetController.bankPaymentIsOpened = true
         webView.loadDataWithBaseURL(null,"""
                         <html>
 
@@ -170,6 +193,7 @@ bottomSheetController: bottomSheetController) : BottomSheetDialogFragment() {
         socket.on("payment_success", Emitter.Listener {
             activity.runOnUiThread {
                 kotlin.run {
+                    socket.disconnect()
                     Log.d("Ittt", Arrays.toString(it))
                     Toast.makeText(activity,"Succeeded",Toast.LENGTH_LONG).show()
                     val tran_data = it[0]
@@ -185,7 +209,6 @@ bottomSheetController: bottomSheetController) : BottomSheetDialogFragment() {
                             .optJSONObject("tran_data")!!.optString("order_ref"))
                     intent.putExtra("tran_data", data_to_pass)
                     activity.startActivity(intent)
-                    socket.disconnect()
                 }
             }
 
