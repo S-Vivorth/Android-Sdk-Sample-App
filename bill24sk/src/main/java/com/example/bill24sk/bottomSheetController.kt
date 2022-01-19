@@ -33,9 +33,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.marozzi.roundbutton.RoundButton
 import io.socket.client.IO
 import io.socket.emitter.Emitter
-import kotlinx.android.synthetic.main.bottomsheet.*
-import kotlinx.android.synthetic.main.payment_processing.*
-import kotlinx.android.synthetic.main.payment_succeeded.*
+
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -61,16 +59,20 @@ import android.net.wifi.WifiInfo
 
 
 import android.net.wifi.WifiManager
+import com.example.bill24sk.databinding.BottomsheetBinding
+import com.example.bill24sk.databinding.PaymentProcessingBinding
+import com.example.bill24sk.databinding.PaymentSucceededBinding
+import kotlinx.android.synthetic.main.bottomsheet.*
+import kotlinx.android.synthetic.main.payment_processing.*
+import kotlinx.android.synthetic.main.payment_succeeded.*
 import java.net.NetworkInterface
 import java.net.Socket
 
 
-open class bottomSheetController constructor(supportFragmentManager: FragmentManager, paylater:Activity, sessionId:String,
+open class bottomSheetController(supportFragmentManager: FragmentManager, paylater:Activity, sessionId:String,
                                      clientID:String, activity:Activity, payment_succeeded:Activity,
-                                     language:String): BottomSheetDialogFragment()
-
+                                     language:String,continue_shopping:Activity): BottomSheetDialogFragment()
 {
-
     var supportFragmentManager: FragmentManager = supportFragmentManager
     var paylater:Activity = paylater
     val payment_succeeded = payment_succeeded
@@ -84,7 +86,7 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
     lateinit var orderID:String
     var support_deeplink: ArrayList<String> = ArrayList()
     var language:String = language
-
+    var continue_shopping = continue_shopping
     lateinit var selected_payment_method_button:JSONObject
     lateinit var rememberAccLabel: JSONObject
     lateinit var paymentConfirmBtn : JSONObject
@@ -93,11 +95,13 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
     lateinit var savedAccLabelColor:String
     lateinit var confirmbtnColor:String
     val uri = URI.create("https://socketio-demo.bill24.net/")
-    val url = "https://sdkapi-demo.bill24.net"
+    val url = "http://203.217.169.102:60096"
     var bankPaymentIsOpened = false
     var count = 0
     var custom_font = ResourcesCompat.getFont(activity,R.font.kh9)
     lateinit var socketID:String
+    lateinit var socket:io.socket.client.Socket
+
     fun setbankPaymentIsOpened(){
         bankPaymentIsOpened = true
     }
@@ -147,11 +151,10 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
         """.trimIndent()
 
         val options = IO.Options.builder().setAuth(mapOf("token" to "$token")).build()
-        val socket = IO.socket(uri,options)
+        socket = IO.socket(uri,options)
 
         activity.runOnUiThread {
             kotlin.run {
-
                 val dialog = Dialog(activity)
                 dialog.setContentView(R.layout.payment_processing)
                 if (language != "en"){
@@ -167,6 +170,7 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
                     payment_succeeded_dialog.dismiss()
 
                     this.dialog!!.dismiss()
+                    activity.startActivity(Intent(activity,continue_shopping::class.java))
                     supportFragmentManager.beginTransaction().detach(this).commit()
 
                     Log.d("das","das")
@@ -195,7 +199,6 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
                                         ?.joinToString(separator = ":") { byte -> "%02X".format(byte)
                                         }
                                     Log.d("MacAddress",a.toString())
-                                    Toast.makeText(activity,socket.id().toString()+"\n${it[0]}",Toast.LENGTH_LONG).show()
                                 if (it[0].toString() != socket.id().toString()) {
 
                                     Log.d("it[0]",it.toString())
@@ -273,28 +276,28 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
 //                                                    payment_succeeded_dialog.continueShoppingBtn.typeface = custom_font
 //                                                    payment_succeeded_dialog.pmMethodValue.typeface = custom_font
                                                     if (language != "en"){
-                                                        payment_succeeded_dialog.pmsucceededLabel.text = "ការទូទាត់ប្រាក់បានជោគជ័យ"
+                                                        pmsucceededLabel.text = "ការទូទាត់ប្រាក់បានជោគជ័យ"
 //                                                        payment_succeeded_dialog.pmsucceededLabel.typeface = custom_font
-                                                        payment_succeeded_dialog.orderIdLabel.text = "លេខបញ្ជាទិញ"
+                                                        orderIdLabel.text = "លេខបញ្ជាទិញ"
 //                                                        payment_succeeded_dialog.orderIdLabel.typeface = custom_font
-                                                        payment_succeeded_dialog.bankRefLabel.text = "លេខកូដយោង"
+                                                        bankRefLabel.text = "លេខកូដយោង"
 //                                                        payment_succeeded_dialog.bankRefLabel.typeface = custom_font
-                                                        payment_succeeded_dialog.pmLabel.text = "ទូទាត់តាម"
-                                                        payment_succeeded_dialog.totalLabel.text = "ទឹកប្រាក់"
-                                                        payment_succeeded_dialog.continueShoppingBtn.text = "បន្តការទិញ"
-                                                        payment_succeeded_dialog.pmMethodValue.text = decryptJson.optString("bank_name_kh")
+                                                        pmLabel.text = "ទូទាត់តាម"
+                                                        totalLabel.text = "ទឹកប្រាក់"
+                                                        continueShoppingBtn.text = "បន្តការទិញ"
+                                                        pmMethodValue.text = decryptJson.optString("bank_name_kh")
                                                     }
                                                     else{
-                                                        payment_succeeded_dialog.pmMethodValue.text = decryptJson.optString("bank_name_en")
+                                                        pmMethodValue.text = decryptJson.optString("bank_name_en")
 
                                                     }
 //                                                    payment_succeeded_dialog.orderIdValue.typeface = custom_font
 //                                                    payment_succeeded_dialog.bankRefvalue.typeface = custom_font
 //                                                    payment_succeeded_dialog.totalValue.typeface = custom_font
-                                                    payment_succeeded_dialog.orderIdValue.text = decryptJson.optString("order_ref")
+                                                    orderIdValue.text = decryptJson.optString("order_ref")
 
-                                                    payment_succeeded_dialog.bankRefvalue.text = decryptJson.optString("bank_ref")
-                                                    payment_succeeded_dialog.totalValue.text = decryptJson.optString("total_amount")
+                                                    bankRefvalue.text = decryptJson.optString("bank_ref")
+                                                    totalValue.text = decryptJson.optString("total_amount")
 
                                                 }
                                             }
@@ -319,58 +322,31 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
         socket.connect()
         socket.on(io.socket.client.Socket.EVENT_CONNECT,Emitter.Listener {
             socketID = socket.id()
-            activity.runOnUiThread {
-                kotlin.run {
-                    Toast.makeText(activity,socket.id().toString(),Toast.LENGTH_LONG).show()
-                }
-            }
         })
-//
-//        socket.on(io.socket.client.Socket.EVENT_DISCONNECT, Emitter.Listener {
-//            activity.runOnUiThread {
-//                kotlin.run {
-//                    Toast.makeText(activity,"Disconnected",Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        })
+
 
 
 
 
     }
+
+
+
+
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        activity.runOnUiThread {
-            Toast.makeText(activity,"Dismissed",Toast.LENGTH_LONG).show()
-
-        }
+        socket.disconnect()
     }
 
 
-    override fun onDetach() {
-        super.onDetach()
-        supportFragmentManager.beginTransaction().remove(this).commitAllowingStateLoss()
-        supportFragmentManager.beginTransaction().detach(this).commit()
-    }
-    override fun onDestroyView() {
-        super.onDestroyView()
-        supportFragmentManager.beginTransaction().remove(this).commitAllowingStateLoss()
-        supportFragmentManager.beginTransaction().detach(this).commit()
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        supportFragmentManager.beginTransaction().remove(this).commitAllowingStateLoss()
-        supportFragmentManager.beginTransaction().detach(this).commit()
 
-    }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return BottomSheetDialog(requireContext(), theme).apply {
-            //for full screen
-//            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
 
             // for expand to specific height
-            behavior.peekHeight = ((Resources.getSystem().displayMetrics.heightPixels) * 0.95).toInt()
+            behavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
             //Resources.getSystem().displayMetrics.heightPixels is to get screen height
         }
     }
@@ -380,9 +356,9 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.bottomsheet,container,false)
-        view.setBackgroundResource(android.R.color.transparent)
-        return view
+        val view = BottomsheetBinding.inflate(inflater,container,false)
+        view.root.setBackgroundResource(android.R.color.transparent)
+        return view.root
     }
 
 //    override fun onStop() {
@@ -412,6 +388,7 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         try {
             val a = NetworkInterface.getNetworkInterfaces()
                 .toList()
@@ -424,12 +401,7 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
             ex.printStackTrace()
             null
         }
-        hidebutton.setOnClickListener {
-            bankPaymentIsOpened = true
-            activity.runOnUiThread {
-                Toast.makeText(activity,bankPaymentIsOpened.toString(),Toast.LENGTH_SHORT).show()
-            }
-        }
+
         switchbutton.isEnabled = false
         progressbar.visibility = View.VISIBLE
         progressbar.bringToFront()
@@ -494,7 +466,7 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
 
                         println("response: ${responses}")
                         val jsonObject = JSONObject(responses)
-                        //optString coz encrypted_data value is String
+
                         // if its value is jsonobject or jsonArray => we set it base on its type
 
                         val encrypted_data: String =
@@ -512,6 +484,7 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
                             )
 
                             val pmJson = JSONObject(decrypted_data.toString())
+                            Log.d("decryptedd",decrypted_data.toString())
                             order_details = pmJson.optJSONObject("order_detail")!!.toString()
                             orderID = pmJson.optJSONObject("order_detail")!!.optString("order_id")
 
@@ -554,6 +527,7 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
                                     else{
                                         confirmbtn.text = dict_style.optJSONObject("payment_confirm_button").optString("display_text_kh")
                                     }
+
                                     save_acc_label.setTextColor(Color.parseColor(dict_style.optJSONObject("remember_account_label").
                                     optString("text_color")))
                                     save_acc_label.typeface = custom_font
@@ -606,17 +580,9 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
                                 payment_succeeded = payment_succeeded
                                 ,order_details,
                                 language = language)
-                            if (this@bottomSheetController.isResumed == true) {
 
                                 socket()
-                            }
-                            else{
-                                activity.runOnUiThread {
-                                    kotlin.run {
-                                        Toast.makeText(activity,"Hide",Toast.LENGTH_LONG).show()
-                                    }
-                                }
-                            }
+
                             val linearmanager: LinearLayoutManager =
                                 LinearLayoutManager(context)
 
@@ -626,6 +592,7 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
                                 kotlin.run {
                                     bankRecycler.layoutManager = linearmanager
                                     bankRecycler.adapter = adapter
+                                    progressbar.visibility = View.GONE
                                     //hasfixedsize=true otherwise when we go to bankpaymentcontroller
                                     //and back to bottomsheetcontroller we cannot click on recyclerview item
                                     bankRecycler.setHasFixedSize(true)
@@ -701,6 +668,8 @@ open class bottomSheetController constructor(supportFragmentManager: FragmentMan
                                         bankRecycler.layoutManager = linearmanager
                                         bankRecycler.adapter = adapter
                                         progressbar.visibility = View.GONE
+                                        bankRecycler.setHasFixedSize(true)
+
                                     }
                                 }
                             }

@@ -4,7 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import kotlinx.android.synthetic.main.activity_payment_succeeded.*
+import com.example.bill24sk.databinding.PaymentSucceededBinding
+import com.example.myapplication.databinding.ActivityPaymentSucceededBinding
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -13,8 +14,8 @@ import java.io.IOException
 
 class payment_succeeded : AppCompatActivity() {
 
-    val url = "https://checkoutapi-demo.bill24.net"
-
+    val url = "https://checkoutapi-staging.bill24.net"
+    lateinit var binding:ActivityPaymentSucceededBinding
     override fun onStart() {
         super.onStart()
 
@@ -22,7 +23,8 @@ class payment_succeeded : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_payment_succeeded)
+        binding = ActivityPaymentSucceededBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         var tran_data = intent.getStringArrayExtra("tran_data")!!
         Log.d("iddd",tran_data.toString())
 //        tran_data = tran_data!!.replace("[","")
@@ -52,21 +54,22 @@ class payment_succeeded : AppCompatActivity() {
                 val jsonObject = JSONObject(responses)
                 runOnUiThread {
                     kotlin.run {
-                        bankName.text = tran_data[1]
-                        bankRef.text = tran_data[2]
-                        orderid.text = "Order #"+tran_data[3]
-                        fee.text = jsonObject.optJSONObject("data").optString("fee_amount")+"0 USD"
-                        date.text = jsonObject.optJSONObject("data").optString("tran_date")
-                        subtotal.text = jsonObject.optJSONObject("data").optString("tran_amount")+"0 USD"
-                        total.text = jsonObject.optJSONObject("data").optString("total_amount")+"0 USD"
+                        binding.bankName.text = tran_data[1]
+                        binding.bankRef.text = tran_data[2]
+                        binding.orderid.text = "Order #"+tran_data[3]
+                        binding.fee.text = jsonObject.optJSONObject("data").optString("fee_amount")+"0 USD"
+                        binding.date.text = jsonObject.optJSONObject("data").optString("tran_date")
+                        binding.subtotal.text = jsonObject.optJSONObject("data").optString("tran_amount")+"0 USD"
+                        binding.total.text = jsonObject.optJSONObject("data").optString("total_amount")+"0 USD"
                     }
                 }
 
             }
 
         })
-        continueBtn.setOnClickListener {
-            startActivity(Intent(applicationContext,MainActivity::class.java))
+        binding.continueBtn.setOnClickListener {
+            startActivity(Intent(applicationContext,homescreen::class.java))
+            finish()
         }
 
     }

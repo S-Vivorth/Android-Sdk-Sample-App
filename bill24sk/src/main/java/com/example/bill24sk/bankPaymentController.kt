@@ -18,17 +18,16 @@ import android.view.WindowManager
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.bank_payment.*
 
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.socket.client.IO
+import io.socket.client.Socket
 import io.socket.emitter.Emitter
-import kotlinx.android.synthetic.main.bottomsheet.*
+import kotlinx.android.synthetic.main.bank_payment.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -52,6 +51,7 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
     var bottomSheetController = bottomSheetController
     val url = "https://sdkapi-demo.bill24.net"
     val socketID = socketID
+    lateinit var socket:Socket
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -112,11 +112,11 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
             json = """
                 {"data" : "${Base64.encodeToString(data.cbcEncrypt(secretKey!!,"""
                     {"event":"payment_processing", "message":"$socketID"}
-                """.trimIndent()),Base64.DEFAULT)}"
+                """.trimIndent()),Base64.DEFAULT)}"}
             """.trimIndent()
         }
         val client = OkHttpClient()
-        val answer = JSONObject(json)
+        val answer = JSONObject(json.replace("\n","").replace("\r",""))
         val mediaTypeJson = "application/json; charset=utf-8".toMediaType()
         var request:Request
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -130,7 +130,7 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
         else{
             request = Request.Builder().header("token",Base64.encodeToString(data.cbcEncrypt(secretKey,"""
             {"app_id":"sdk","room_name":"${orderID}"}
-        """.trimIndent()),Base64.DEFAULT).toString())
+        """.trimIndent()),Base64.NO_WRAP).toString())
                 .header("Accept","application/json")
                 .url("https://socketio-demo.bill24.net/socket/send").post(answer.toString().toRequestBody(mediaTypeJson))
                 .build()
@@ -149,53 +149,59 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sendProcessing()
+        Log.d("formdata",formdata.toString())
         bottomSheetController.bankPaymentIsOpened = true
+
         webView.loadDataWithBaseURL(null,"""
                         <html>
-
                             <body>
-
                             <script>
                         function submit_form(data) {
-
-                        let form = document.createElement("form");
+                        console.log("javascriptt data");
+                        console.log(data.action_url);
+                        var form = document.createElement("form");
                         form.setAttribute("action", data.action_url);
                         form.setAttribute("method", "post");
-                        for (let key in data.form_data) {
-                            let input = document.createElement("input");
+                        for (var key in data.form_data) {
+                            var input = document.createElement("input");
                             input.setAttribute("name", key);
                             input.setAttribute("type", "hidden");
                             input.setAttribute("value", data.form_data[key]);
                             form.appendChild(input);
                         }
-                        document.getElementsByTagName("body")[0].append(form);
+                        document.getElementsByTagName("body")[0].appendChild(form);
                         form.submit();
                         }
-                        submit_form($formdata);
+                        submit_form(${formdata});
 
                         </script>
                             </body>
                         </html>
         """.trimIndent(),"text/html", "utf-8", null)
+        webView.clearView()
+        webView.settings.useWideViewPort = true
+        webView.settings.loadWithOverviewMode = true
         webView.settings.javaScriptEnabled = true
         webView.webViewClient = WebViewClient()
+        webView.settings.domStorageEnabled = true
+
+
         val data = data()
         val client:OkHttpClient = OkHttpClient()
         val secretKey:SecretKey = data.makePbeKey("client".toCharArray())!!
         val token:String = """
             ${Base64.encodeToString(data.cbcEncrypt(secretKey,"""
                 {"app_id":"sdk","room_name":"$orderID"}
-            """.trimIndent()),Base64.DEFAULT)}
+            """.trimIndent()),Base64.NO_WRAP)}
         """.trimIndent()
 
         val options = IO.Options.builder().setAuth(mapOf("token" to "$token")).build()
-        val socket = IO.socket(uri,options)
+        socket = IO.socket(uri,options)
         socket.on("payment_success", Emitter.Listener {
             activity.runOnUiThread {
                 kotlin.run {
                     socket.disconnect()
                     Log.d("Ittt", Arrays.toString(it))
-                    Toast.makeText(activity,"Succeeded",Toast.LENGTH_LONG).show()
                     val tran_data = it[0]
 
                     val intent = Intent(activity,payment_succeeded::class.java)
@@ -210,6 +216,7 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
                     intent.putExtra("tran_data", data_to_pass)
                     activity.startActivity(intent)
                 }
+
             }
 
         })
@@ -218,4 +225,9 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
 
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        bottomSheetController.socket.connect()
+        socket.disconnect()
+    }
 }
