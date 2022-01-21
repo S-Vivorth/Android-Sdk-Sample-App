@@ -1,6 +1,5 @@
 package com.example.bill24sk
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -8,65 +7,44 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.setPadding
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.FragmentTransitionSupport
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.marozzi.roundbutton.RoundButton
 import io.socket.client.IO
-import io.socket.emitter.Emitter
 
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
-import java.lang.reflect.Array
 import java.net.URI
 import java.security.GeneralSecurityException
-import java.security.SecureRandom
-import java.security.Security
 import java.util.*
-import java.util.Base64.getEncoder
 
-import javax.crypto.Cipher
 import javax.crypto.SecretKey
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
 import kotlin.collections.ArrayList
-import kotlin.concurrent.thread
-import android.net.wifi.WifiInfo
 
 
 import android.net.wifi.WifiManager
-import com.example.bill24sk.databinding.BottomsheetBinding
-import com.example.bill24sk.databinding.PaymentProcessingBinding
-import com.example.bill24sk.databinding.PaymentSucceededBinding
-import kotlinx.android.synthetic.main.bottomsheet.*
-import kotlinx.android.synthetic.main.payment_processing.*
-import kotlinx.android.synthetic.main.payment_succeeded.*
+import io.socket.emitter.Emitter
+
+import kotlinx.android.synthetic.main.sdk_bottomsheet.*
+import kotlinx.android.synthetic.main.sdk_payment_processing.*
+import kotlinx.android.synthetic.main.sdk_payment_succeeded.*
 import java.net.NetworkInterface
-import java.net.Socket
 
 
 open class bottomSheetController(supportFragmentManager: FragmentManager, paylater:Activity, sessionId:String,
@@ -95,7 +73,7 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
     lateinit var savedAccLabelColor:String
     lateinit var confirmbtnColor:String
     val uri = URI.create("https://socketio-demo.bill24.net/")
-    val url = "http://203.217.169.102:60096"
+    val url = "https://sdkapi-demo.bill24.net"
     var bankPaymentIsOpened = false
     var count = 0
     var custom_font = ResourcesCompat.getFont(activity,R.font.kh9)
@@ -156,14 +134,14 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
         activity.runOnUiThread {
             kotlin.run {
                 val dialog = Dialog(activity)
-                dialog.setContentView(R.layout.payment_processing)
+                dialog.setContentView(R.layout.sdk_payment_processing)
                 if (language != "en"){
                     dialog.processingText.text = "កំពុងប្រតិបត្តិការបង់ប្រាក់"
                     dialog.processingText.setTypeface(custom_font)
                 }
                 dialog.setCanceledOnTouchOutside(false)
                 val payment_succeeded_dialog = Dialog(activity)
-                payment_succeeded_dialog.setContentView(R.layout.payment_succeeded)
+                payment_succeeded_dialog.setContentView(R.layout.sdk_payment_succeeded)
                 payment_succeeded_dialog.setCanceledOnTouchOutside(false)
                 payment_succeeded_dialog.continueShoppingBtn.setOnClickListener {
                     socket.disconnect()
@@ -276,29 +254,28 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
 //                                                    payment_succeeded_dialog.continueShoppingBtn.typeface = custom_font
 //                                                    payment_succeeded_dialog.pmMethodValue.typeface = custom_font
                                                     if (language != "en"){
-                                                        pmsucceededLabel.text = "ការទូទាត់ប្រាក់បានជោគជ័យ"
+                                                        payment_succeeded_dialog.pmsucceededLabel.text = "ការទូទាត់ប្រាក់បានជោគជ័យ"
 //                                                        payment_succeeded_dialog.pmsucceededLabel.typeface = custom_font
-                                                        orderIdLabel.text = "លេខបញ្ជាទិញ"
+                                                        payment_succeeded_dialog.orderIdLabel.text = "លេខបញ្ជាទិញ"
 //                                                        payment_succeeded_dialog.orderIdLabel.typeface = custom_font
-                                                        bankRefLabel.text = "លេខកូដយោង"
+                                                        payment_succeeded_dialog.bankRefLabel.text = "លេខកូដយោង"
 //                                                        payment_succeeded_dialog.bankRefLabel.typeface = custom_font
-                                                        pmLabel.text = "ទូទាត់តាម"
-                                                        totalLabel.text = "ទឹកប្រាក់"
-                                                        continueShoppingBtn.text = "បន្តការទិញ"
-                                                        pmMethodValue.text = decryptJson.optString("bank_name_kh")
+                                                        payment_succeeded_dialog.pmLabel.text = "ទូទាត់តាម"
+                                                        payment_succeeded_dialog.totalLabel.text = "ទឹកប្រាក់"
+                                                        payment_succeeded_dialog.continueShoppingBtn.text = "បន្តការទិញ"
+                                                        payment_succeeded_dialog.pmMethodValue.text = decryptJson.optString("bank_name_kh")
                                                     }
                                                     else{
-                                                        pmMethodValue.text = decryptJson.optString("bank_name_en")
+                                                        payment_succeeded_dialog.pmMethodValue.text = decryptJson.optString("bank_name_en")
 
                                                     }
 //                                                    payment_succeeded_dialog.orderIdValue.typeface = custom_font
 //                                                    payment_succeeded_dialog.bankRefvalue.typeface = custom_font
 //                                                    payment_succeeded_dialog.totalValue.typeface = custom_font
-                                                    orderIdValue.text = decryptJson.optString("order_ref")
+                                                    payment_succeeded_dialog.orderIdValue.text = "#"+decryptJson.optString("order_ref")
 
-                                                    bankRefvalue.text = decryptJson.optString("bank_ref")
-                                                    totalValue.text = decryptJson.optString("total_amount")
-
+                                                    payment_succeeded_dialog.bankRefvalue.text = decryptJson.optString("bank_ref")
+                                                    payment_succeeded_dialog.totalValue.text = decryptJson.optString("total_amount")+"0 USD"
                                                 }
                                             }
 
@@ -356,9 +333,9 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = BottomsheetBinding.inflate(inflater,container,false)
-        view.root.setBackgroundResource(android.R.color.transparent)
-        return view.root
+        val view = LayoutInflater.from(activity).inflate(R.layout.sdk_bottomsheet,container,false)
+        view.setBackgroundResource(android.R.color.transparent)
+        return view
     }
 
 //    override fun onStop() {

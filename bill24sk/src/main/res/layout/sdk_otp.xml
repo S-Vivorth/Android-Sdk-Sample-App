@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:sdk="http://schemas.android.com/apk/res-auto"
+
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ProgressBar
         android:layout_width="wrap_content"
@@ -136,14 +138,12 @@
         <com.marozzi.roundbutton.RoundButton
             android:gravity="center"
             android:id="@+id/verify_btn"
-            app:rb_text_color="@color/white"
-            app:rb_background_color="@color/purple_700"
+
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="20dp"
-            app:rb_corner_radius="10dp"
             android:text="Verify"
             android:textAllCaps="false"
             android:textColor="@color/white" />

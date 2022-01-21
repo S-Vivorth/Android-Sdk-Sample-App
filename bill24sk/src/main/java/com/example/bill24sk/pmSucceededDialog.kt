@@ -6,13 +6,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatDialogFragment
-import com.example.bill24sk.databinding.PaymentSucceededBinding
-import kotlinx.android.synthetic.main.payment_succeeded.*
+import kotlinx.android.synthetic.main.sdk_payment_succeeded.*
 
 class pmSucceededDialog : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = activity?.layoutInflater
-        val view: View = inflater!!.inflate(R.layout.payment_succeeded,null)
+        val view: View = inflater!!.inflate(R.layout.sdk_payment_succeeded,null)
         continueShoppingBtn.setOnClickListener {
             Log.d("button", "is clicked.")
         }

@@ -2,11 +2,9 @@ package com.example.bill24sk
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
-import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
@@ -14,20 +12,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 import android.webkit.WebViewClient
-import androidx.annotation.RequiresApi
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
-import kotlinx.android.synthetic.main.bank_payment.*
+import kotlinx.android.synthetic.main.sdk_bank_payment.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -37,7 +30,6 @@ import java.net.NetworkInterface
 import java.net.URI
 import java.util.*
 import javax.crypto.SecretKey
-import kotlin.collections.ArrayList
 
 
 class bankPaymentController(formdata:String,payment_succeeded:Activity,orderID:String,activity: Activity,
@@ -58,7 +50,7 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
         savedInstanceState: Bundle?
     ): View? {
 
-        val view = inflater.inflate(R.layout.bank_payment,container,false)
+        val view = inflater.inflate(R.layout.sdk_bank_payment,container,false)
         return view
     }
 
@@ -214,7 +206,9 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
                         JSONObject(tran_data.toString())
                             .optJSONObject("tran_data")!!.optString("order_ref"))
                     intent.putExtra("tran_data", data_to_pass)
+
                     activity.startActivity(intent)
+                    activity.finish()
                 }
 
             }

@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.sdk_activity_main)
         var linear: LinearLayout = findViewById(R.id.linear)
         bottomSheetBehavior = BottomSheetBehavior.from(linear)
 

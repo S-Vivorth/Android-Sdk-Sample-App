@@ -1,10 +1,7 @@
 package com.example.bill24sk
 
 import android.app.Activity
-import android.app.Dialog
-import android.app.job.JobInfo
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -25,28 +22,18 @@ import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
 import android.util.*
-import android.view.Gravity
-import androidx.annotation.RequiresApi
 import androidx.core.content.res.ResourcesCompat
-import okhttp3.internal.http.promisesBody
 import javax.crypto.SecretKey
 import kotlin.collections.ArrayList
-import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.opengl.Visibility
 import android.util.Base64
-import androidx.core.view.setPadding
-import androidx.lifecycle.Lifecycle
 
-import io.socket.client.IO
-import io.socket.emitter.Emitter
-import kotlinx.android.synthetic.main.bank_cell.view.*
-import kotlinx.android.synthetic.main.bottomsheet.*
-import kotlinx.android.synthetic.main.save_acc_cell.view.*
+import kotlinx.android.synthetic.main.sdk_bank_cell.view.*
+import kotlinx.android.synthetic.main.sdk_bottomsheet.*
+import kotlinx.android.synthetic.main.sdk_save_acc_cell.view.*
 
-import java.net.URI
 import java.util.*
-import java.io.Serializable
+import java.util.concurrent.TimeUnit
 
 class banksAdapter(supportFragmentManager: FragmentManager,paylater:Activity,
                    itemModelList: ArrayList<itemModel>,activity:Activity,bottomSheetController: bottomSheetController,
@@ -63,7 +50,7 @@ class banksAdapter(supportFragmentManager: FragmentManager,paylater:Activity,
     lateinit var activity: Activity
     var order_details:String
     var isopened:Boolean = false
-    val url = "http://203.217.169.102:60096"
+    val url = "https://sdkapi-demo.bill24.net"
     var language:String
     var custom_font = ResourcesCompat.getFont(activity,R.font.kh9)
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -97,8 +84,8 @@ init {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
 
-        val view = LayoutInflater.from(activity).inflate(R.layout.bank_cell,parent,false)
-        val view1 = LayoutInflater.from(activity).inflate(R.layout.save_acc_cell,parent,false)
+        val view = LayoutInflater.from(activity).inflate(R.layout.sdk_bank_cell,parent,false)
+        val view1 = LayoutInflater.from(activity).inflate(R.layout.sdk_save_acc_cell,parent,false)
         if (viewType == 0){
             return ViewHolder(view)
         }
@@ -152,7 +139,8 @@ init {
                 val shape = GradientDrawable()
                 shape.cornerRadius = 0F
             viewholder.itemView.card.radius = bottomSheetController.paymentMethodBtn.optString("icon_radius").split("p")[0].toFloat()
-            viewholder.itemView.bankImage.setPadding(bottomSheetController.paymentMethodBtn.optString("icon_border_size").split("p")[0].toInt()*3)
+            val padding = bottomSheetController.paymentMethodBtn.optString("icon_border_size").split("p")[0].toInt()*3
+            viewholder.itemView.bankImage.setPadding(padding,padding,padding,padding)
             viewholder.itemView.bankImage.setBackgroundColor(Color.parseColor(bottomSheetController.paymentMethodBtn.optString("icon_border_color")))
 
             viewholder.itemView.bankImage.adjustViewBounds = true
@@ -453,7 +441,7 @@ init {
 //                                            var arrayList = ArrayList<Any>()
 //
 //                                        arrayList.add(decryptedCheckoutData.toString())
-//                                        arrayList.add(payment_succeeded.toString())
+//                                        arrayList.add(sdk_payment_succeeded.toString())
 //                                        arrayList.add(bottomSheetController.orderID.toString())
 //                                        arrayList.add(bottomSheetController.socketID)
 ////                                            val a = Class.forName("dasd").asSubclass(Activity::class.java)
@@ -473,7 +461,7 @@ init {
 
                                         bankPaymentController.show(fragmentManager,"Bank Payment")
                                         bottomSheetController.socket.disconnect()
-//                                        fm.addToBackStack("bottomsheet")
+//                                        fm.addToBackStack("sdk_bottomsheet")
 //                                        fm.commit()
                                         bottomSheetController.progressbar.visibility = View.GONE
                                     }
@@ -521,7 +509,7 @@ init {
                         var answer = JSONObject(json.replace("\n","").replace("\r",""))
                         val url:String = "$url/tokenize/validate"
                         val mediaTypeJson = "application/json; charset=utf-8".toMediaType()
-
+                        Log.d("dasd",answer.toString())
                         val request = Request.Builder().url(url).post(answer.toString().toRequestBody(mediaTypeJson)).build()
                         client.newCall(request).enqueue(object : Callback {
                             override fun onFailure(call: Call, e: IOException) {

@@ -16,24 +16,20 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import com.marozzi.roundbutton.RoundButton
-import io.socket.client.Socket
-import kotlinx.android.synthetic.main.otp.*
+import kotlinx.android.synthetic.main.sdk_otp.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
 import javax.crypto.SecretKey
-import kotlin.math.floor
 
 
 class otp(bankImage:String,bankName:String,accNo:String,activity:Activity,
@@ -48,7 +44,7 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
     var bankID = bankID
     var bottomSheetController = bottomSheetController
 
-    val url:String = "http://203.217.169.102:60096"
+    val url:String = "https://sdkapi-demo.bill24.net"
     val payment_succeeded = payment_succeeded
     var language:String = language
     var verifyBtnStyle:JSONObject = verifyBtnStyle
@@ -64,7 +60,7 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
         savedInstanceState: Bundle?
     ): View? {
 
-        val view = inflater.inflate(R.layout.otp,container,false)
+        val view = inflater.inflate(R.layout.sdk_otp,container,false)
         return view
     }
 
@@ -195,6 +191,7 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
             optString("border_color")))
             .withCornerWidth(verifyBtnStyle.
             optString("border_size").split("p")[0].toInt()*2)
+            .withCornerRadius(verifyBtnStyle.optString("radius").split("p")[0].toInt()*2)
         verify_btn.setCustomizations(builder)
         otpbankName.typeface = custom_font
         otpAccNo.typeface = custom_font
@@ -302,7 +299,8 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
                             JSONObject(decrypted_data).optJSONObject("tran_data")!!
                                 .optString("order_ref"))
                         intent.putExtra("tran_data",data_to_pass)
-                        startActivity(intent)
+                        activity.startActivity(intent)
+                        activity.finish()
                         otpProgressBar.visibility = View.GONE
 
                     }

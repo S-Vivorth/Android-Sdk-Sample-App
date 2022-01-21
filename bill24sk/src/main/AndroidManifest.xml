@@ -17,9 +17,7 @@
         android:theme="@style/Theme.MyApplication"
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="stateAlwaysVisible">
-        <activity
-            android:name=".bankController"
-            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
