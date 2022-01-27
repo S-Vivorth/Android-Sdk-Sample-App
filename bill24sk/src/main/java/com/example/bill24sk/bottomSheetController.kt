@@ -49,7 +49,9 @@ import java.net.NetworkInterface
 
 open class bottomSheetController(supportFragmentManager: FragmentManager, paylater:Activity, sessionId:String,
                                      clientID:String, activity:Activity, payment_succeeded:Activity,
-                                     language:String,continue_shopping:Activity): BottomSheetDialogFragment()
+                                     language:String,continue_shopping:Activity,
+                                        environment:String): BottomSheetDialogFragment()
+
 {
     var supportFragmentManager: FragmentManager = supportFragmentManager
     var paylater:Activity = paylater
@@ -72,20 +74,16 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
     lateinit var paymentMethodBtn:JSONObject
     lateinit var savedAccLabelColor:String
     lateinit var confirmbtnColor:String
+
     val uri = URI.create("https://socketio-demo.bill24.net/")
-    val url = "https://sdkapi-demo.bill24.net"
+    lateinit var url:String
     var bankPaymentIsOpened = false
     var count = 0
     var custom_font = ResourcesCompat.getFont(activity,R.font.kh9)
     lateinit var socketID:String
     lateinit var socket:io.socket.client.Socket
+    val environment:String = environment
 
-    fun setbankPaymentIsOpened(){
-        bankPaymentIsOpened = true
-    }
-    fun print(){
-        Log.d("printt","asdadd")
-    }
 
     override fun onResume() {
         super.onResume()
@@ -366,6 +364,12 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (environment == "prod") {
+            url = "https://sdkapi-demo.bill24.net"
+        }
+        else{
+            url = "http://203.217.169.102:60096"
+        }
         try {
             val a = NetworkInterface.getNetworkInterfaces()
                 .toList()

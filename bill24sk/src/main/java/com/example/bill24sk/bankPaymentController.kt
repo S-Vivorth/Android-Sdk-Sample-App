@@ -41,7 +41,6 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
     val uri = URI.create("https://socketio-demo.bill24.net/")
     val activity = activity
     var bottomSheetController = bottomSheetController
-    val url = "https://sdkapi-demo.bill24.net"
     val socketID = socketID
     lateinit var socket:Socket
     override fun onCreateView(

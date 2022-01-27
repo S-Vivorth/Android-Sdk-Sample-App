@@ -12,9 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/bill24sdk" />
             <option value="$PROJECT_DIR$/bill24sk" />
-            <option value="$PROJECT_DIR$/testmod" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

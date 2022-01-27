@@ -50,7 +50,7 @@ class banksAdapter(supportFragmentManager: FragmentManager,paylater:Activity,
     lateinit var activity: Activity
     var order_details:String
     var isopened:Boolean = false
-    val url = "https://sdkapi-demo.bill24.net"
+    lateinit var url:String
     var language:String
     var custom_font = ResourcesCompat.getFont(activity,R.font.kh9)
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -112,8 +112,7 @@ init {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         bottomSheetController.progressbar.visibility = View.GONE
-
-
+        url = bottomSheetController.url
         if (myItemModel[position].imageString == ""){
             val viewholder1:ViewHolder1 = holder as ViewHolder1
                 viewholder1.itemView.savedAccText.text = myItemModel[position].bankName
@@ -169,7 +168,6 @@ init {
 
                     bottomSheetController.confirmbtn.isEnabled = true
                     bottomSheetController.confirmbtn.alpha = 1F
-                    bottomSheetController.print()
                     if (position< bottomSheetController.supportTokenize.size){
                         if(bottomSheetController.supportTokenize[position] == "true"){
                             Log.d("tokenizeee","true")
@@ -239,7 +237,14 @@ init {
                     val supportTokenize = bottomSheetController.supportTokenize
                     secretKey = data.makePbeKey("sdkdev".toCharArray())!!
                     Log.d("deeplinkk",bottomSheetController.support_deeplink.toString())
-                    if (selectedPosition < supportTokenize.size-1){
+                    var lenghtOfAvailBanks:Int = 0
+                    if (bottomSheetController.bankIdList.contains("pay_later")){
+                        lenghtOfAvailBanks = supportTokenize.size - 1
+                    }
+                    else{
+                        lenghtOfAvailBanks = supportTokenize.size
+                    }
+                    if (selectedPosition < lenghtOfAvailBanks){
                         if (bottomSheetController.support_deeplink[selectedPosition] == "true"){
                             val client: OkHttpClient = OkHttpClient()
 
@@ -474,7 +479,7 @@ init {
                         }
 
                     }
-                    else if (selectedPosition == supportTokenize.size-1){
+                    else if (selectedPosition == lenghtOfAvailBanks){
                         Log.d("laterr","selected")
                         val intent = Intent(context, paylater::class.java)
                         intent.putExtra("order_details",order_details)

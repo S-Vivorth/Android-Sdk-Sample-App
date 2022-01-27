@@ -25,7 +25,8 @@ class MainActivity : AppCompatActivity() {
     var language:String = "en"
     lateinit var sessionId:String
 
-
+    // environment must be "uat" or "prod" only
+    val environment:String = "uat"
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -98,7 +99,7 @@ class MainActivity : AppCompatActivity() {
             val mediaTypeJson = "application/json; charset=utf-8".toMediaType()
             val request = Request.Builder().header("token","f91d077940cf44ebbb1b6abdebce0f0a")
                 .header("Accept","application/json")
-                .url("https://checkoutapi-staging.bill24.net/order/init")
+                .url("https://checkoutapi-demo.bill24.net/order/init")
                 .post(jsonObject.toString().toRequestBody(mediaTypeJson))
                 .build()
             client.newCall(request).enqueue(object : Callback {
@@ -119,9 +120,10 @@ class MainActivity : AppCompatActivity() {
                                 val bottomsheetFrag = bottomSheetController(supportFragmentManager = supportFragmentManager,paylater = pay_later(),
                                     sessionId = "$sessionId",
                                     clientID = "W/GkvceL7nCjOF/v+fu5MA+epIQMXMJedMeXvbvEn7I=", activity = this@MainActivity
-                                    ,payment_succeeded = payment_succeeded(),language = language,homescreen())
+                                    ,payment_succeeded = payment_succeeded(),language = language,homescreen(),
+                                environment = environment)
 
-                                bottomsheetFrag.show(supportFragmentManager,"bottomsheet")
+                                bottomsheetFrag.show(supportFragmentManager,"sdk_bottomsheet")
                             }
 
                     else{

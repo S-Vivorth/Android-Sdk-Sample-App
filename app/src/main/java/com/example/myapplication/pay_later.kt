@@ -16,7 +16,7 @@ class pay_later() : AppCompatActivity() {
         val json = JSONObject(order_details)
         var listbank = ""
         binding.continueBtn.setOnClickListener {
-            startActivity(Intent(this.applicationContext,MainActivity()::class.java))
+            startActivity(Intent(this.applicationContext,homescreen()::class.java))
             finish()
         }
         binding.orderid.text = "Order #"+json.optString("order_ref")

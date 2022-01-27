@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -31,6 +32,8 @@ public class Main extends AppCompatActivity {
     Switch switchLanguage;
     Button button;
     EditText orderRef;
+    // environment must be "uat" or "prod" only
+    String environtment = "prod";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +103,7 @@ public class Main extends AppCompatActivity {
                     MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
                     Request request = new Request.Builder().header("token","f91d077940cf44ebbb1b6abdebce0f0a")
                             .header("Accept","application/json")
-                            .url("https://checkoutapi-staging.bill24.net/order/init")
+                            .url("https://checkoutapi-demo.bill24.net/order/init")
                             .post(RequestBody.create(mediaType,jsonObject.toString()))
                             .build();
                     client.newCall(request).enqueue(new Callback() {
@@ -112,6 +115,7 @@ public class Main extends AppCompatActivity {
                         @Override
                         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                             String responses = response.body().string();
+                            Log.d("responses",responses);
                             try {
                                 JSONObject checkOutObject  = new JSONObject(responses);
                                 sessionId = checkOutObject.optJSONObject("data").optString("session_id");
@@ -127,8 +131,9 @@ public class Main extends AppCompatActivity {
                                                             Main.this,
                                                             new payment_succeeded(),
                                                             language,
-                                                            new homescreen());
-                                            bottomSheetController.show(getSupportFragmentManager(),"bottomsheet");
+                                                            new homescreen(),
+                                                            environtment);
+                                            bottomSheetController.show(getSupportFragmentManager(),"sdk_bottomsheet");
                                         }
                                         else{
                                             Toast.makeText(getApplicationContext(),checkOutObject.optString("message"),Toast.LENGTH_SHORT).show();

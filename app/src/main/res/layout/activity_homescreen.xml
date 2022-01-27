@@ -5,12 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".homescreen"
 >
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="HomeScreen"
-    android:layout_centerInParent="true"
-    />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Biller's HomeScreen"
+
+        android:textSize="30dp" />
     <Button
 
         android:textAllCaps="false"

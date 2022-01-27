@@ -44,7 +44,7 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
     var bankID = bankID
     var bottomSheetController = bottomSheetController
 
-    val url:String = "https://sdkapi-demo.bill24.net"
+    lateinit var url:String
     val payment_succeeded = payment_succeeded
     var language:String = language
     var verifyBtnStyle:JSONObject = verifyBtnStyle
@@ -167,6 +167,7 @@ validate_token:String,bankID:String,bottomSheetController: bottomSheetController
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        url = bottomSheetController.url
         sendProcessing()
         otpverification.typeface = custom_font
         enterOtpText.typeface = custom_font
