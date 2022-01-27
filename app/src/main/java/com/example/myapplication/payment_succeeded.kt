@@ -12,7 +12,6 @@ import org.json.JSONObject
 import java.io.IOException
 
 class payment_succeeded : AppCompatActivity() {
-    a
     val url = "https://checkoutapi-demo.bill24.net"
     lateinit var binding:ActivityPaymentSucceededBinding
     override fun onStart() {
