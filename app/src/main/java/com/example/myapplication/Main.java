@@ -125,7 +125,6 @@ public class Main extends AppCompatActivity {
                                         if (sessionId != "null") {
                                             bottomSheetController bottomSheetController =
                                                     new bottomSheetController(getSupportFragmentManager(),
-                                                            new pay_later(),
                                                             sessionId,
                                                             "W/GkvceL7nCjOF/v+fu5MA+epIQMXMJedMeXvbvEn7I=",
                                                             Main.this,

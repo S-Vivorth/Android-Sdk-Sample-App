@@ -47,14 +47,14 @@ import kotlinx.android.synthetic.main.sdk_payment_succeeded.*
 import java.net.NetworkInterface
 
 
-open class bottomSheetController(supportFragmentManager: FragmentManager, paylater:Activity, sessionId:String,
+open class bottomSheetController @JvmOverloads constructor(supportFragmentManager: FragmentManager, paylater:Activity? = MainActivity(), sessionId:String,
                                      clientID:String, activity:Activity, payment_succeeded:Activity,
                                      language:String,continue_shopping:Activity,
                                         environment:String): BottomSheetDialogFragment()
 
 {
     var supportFragmentManager: FragmentManager = supportFragmentManager
-    var paylater:Activity = paylater
+    var paylater:Activity? = paylater
     val payment_succeeded = payment_succeeded
     val activity = activity
     var sessionId = sessionId

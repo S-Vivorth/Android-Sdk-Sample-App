@@ -35,12 +35,12 @@ import kotlinx.android.synthetic.main.sdk_save_acc_cell.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class banksAdapter(supportFragmentManager: FragmentManager,paylater:Activity,
+class banksAdapter (supportFragmentManager: FragmentManager,paylater:Activity?,
                    itemModelList: ArrayList<itemModel>,activity:Activity,bottomSheetController: bottomSheetController,
                    payment_succeeded:Activity,order_details:String,language:String): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var context = activity
     lateinit var fragmentManager:FragmentManager
-    lateinit var paylater: Activity
+    var paylater: Activity?
     lateinit var myItemModel: ArrayList<itemModel>
     var selectedPosition = -1
     var count = 0
@@ -435,7 +435,7 @@ init {
 
                     }
                     else if (selectedPosition == lenghtOfAvailBanks){
-                        val intent = Intent(context, paylater::class.java)
+                        val intent = Intent(context, paylater!!::class.java)
                         intent.putExtra("order_details",order_details)
                         bottomSheetController.dialog!!.dismiss()
                         context.startActivity(intent)
