@@ -76,6 +76,7 @@ init {
     this.order_details = order_details
     this.language = language
 }
+
     companion object {
         const val ABA_SCHEME = "abamobilebank"
         const val ABA_DOMAIN = "ababank.com"
@@ -145,24 +146,10 @@ init {
             viewholder.itemView.bankImage.adjustViewBounds = true
             viewholder.itemView.bankName.setTypeface(ResourcesCompat.getFont(activity,R.font.kh9))
 
-                if (position == bottomSheetController.supportTokenize.size-1){
-                    viewholder.itemView.fee.text = ""
-                }
-                else{
-                    viewholder.itemView.fee.text = current_item_position.fee
-                    viewholder.itemView.fee.typeface = custom_font
-                }
-//        if (current_item_position.bankName == "Saved Accounts"){
-//            holder.itemView.bankName.text = current_item_position.bankName
-//            holder.itemView.fee.text = current_item_position.fee
-//            holder.itemView.bankName.textSize = 25F
-//            Log.d("Tagg",count.toString())
-//
-//            holder.itemView.bankName.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT)
-//            holder.itemView.bankName.gravity = Gravity.CENTER
-//            holder.itemView.bankImage.layoutParams = LinearLayout.LayoutParams(0,0)
-//            holder.itemView.radioBox.layoutParams = RelativeLayout.LayoutParams(0,0)
-//        }
+                        viewholder.itemView.fee.text = current_item_position.fee
+                        viewholder.itemView.fee.typeface = custom_font
+
+
 
                 viewholder.itemView.setOnClickListener {
 
@@ -170,11 +157,9 @@ init {
                     bottomSheetController.confirmbtn.alpha = 1F
                     if (position< bottomSheetController.supportTokenize.size){
                         if(bottomSheetController.supportTokenize[position] == "true"){
-                            Log.d("tokenizeee","true")
                             bottomSheetController.switchbutton.isEnabled = true
                         }
                         else{
-                            Log.d("tokenizee","false")
                             bottomSheetController.switchbutton.isChecked = false
                             bottomSheetController.switchbutton.isEnabled = false
 
@@ -226,17 +211,14 @@ init {
 
         bottomSheetController.confirmbtn.setOnClickListener {
             isopened = true
-            Log.d("isopenn",isopened.toString())
 
             bottomSheetController.hidebutton.performClick()
-            Log.d("bankPaymentIsOpened",bottomSheetController.bankPaymentIsOpened.toString())
             bottomSheetController.progressbar.visibility = View.VISIBLE
             activity.runOnUiThread {
                 kotlin.run {
                     val data = data()
                     val supportTokenize = bottomSheetController.supportTokenize
                     secretKey = data.makePbeKey("sdkdev".toCharArray())!!
-                    Log.d("deeplinkk",bottomSheetController.support_deeplink.toString())
                     var lenghtOfAvailBanks:Int = 0
                     if (bottomSheetController.bankIdList.contains("pay_later")){
                         lenghtOfAvailBanks = supportTokenize.size - 1
@@ -281,7 +263,6 @@ init {
 
                                 override fun onResponse(call: Call, response: Response) {
                                     val responses = response.body!!.string()
-                                    println("responded: ${responses}")
 
                                     val jsonObject = JSONObject(responses)
                                     if (jsonObject.optJSONObject("result").optString("result_code") != "000"){
@@ -370,14 +351,11 @@ init {
 {"session_id": "${bottomSheetController.sessionId}","client_id": "${bottomSheetController.clientID}","bank_id": "${bottomSheetController.bankIdList[selectedPosition]}","remember_acc": ${bottomSheetController.switchbutton.isChecked},"user_agent": "web-mobile"}
 """.trimIndent()),Base64.DEFAULT)}"}""".trimIndent()
                             }
-                            Log.d("jsonn before replace",json)
 
                             json = json.replace("\n","").replace("\r","")
-                            Log.d("after replaced",json)
 
                             var answer = JSONObject(json.replace("\n","").replace("\r",""))
 
-                            Log.d("answerr",answer.toString())
 
                             val url:String = "$url/payment/init"
                             val mediaTypeJson = "application/json; charset=utf-8".toMediaType()
@@ -386,13 +364,11 @@ init {
 
                             client.newCall(request).enqueue(object: Callback{
                                 override fun onFailure(call: Call, e: IOException) {
-                                    Log.d("Failedd","${e}")
-                                    println("Faileddd: ${e}")
+                                    Log.d("Exception","${e}")
                                 }
 
                                 override fun onResponse(call: Call, response: Response) {
                                     val responses = response.body!!.string()
-                                    println("responded: ${responses}")
                                     val jsonObject = JSONObject(responses)
                                     if (jsonObject.optJSONObject("result").optString("result_code") != "000"){
                                         activity.runOnUiThread {
@@ -434,30 +410,9 @@ init {
                                             Base64.decode(checkout_data,Base64.DEFAULT)
                                         ).toString().replace("\n","").replace("\r","")
 
-//                                        val decryptedCheckoutData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                                            data.cbcDecrypt(secretKey,
-//                                                java.util.Base64.getDecoder().decode(checkout_data))
-//                                        } else {
-//                                            Base64.decode(checkout_data,Base64.DEFAULT)
-//                                        }
+
                                         Log.d("Decryptedddd",decryptedCheckoutData.toString())
-//                                        try {
-//                                            var intent = Intent(activity,bankController::class.java)
-//                                            var arrayList = ArrayList<Any>()
-//
-//                                        arrayList.add(decryptedCheckoutData.toString())
-//                                        arrayList.add(sdk_payment_succeeded.toString())
-//                                        arrayList.add(bottomSheetController.orderID.toString())
-//                                        arrayList.add(bottomSheetController.socketID)
-////                                            val a = Class.forName("dasd").asSubclass(Activity::class.java)
-//                                            intent.putExtra("data",arrayList)
-////                                            intent.putExtra("data","com.example.myapplication.show")
-//                                            activity.startActivity(intent)
-//
-//                                        }
-//                                        catch (ex:Exception) {
-//                                            Log.d("exceptionnn","$ex")
-//                                        }
+
 
                                         val bankPaymentController = bankPaymentController(
                                             formdata = decryptedCheckoutData,payment_succeeded = payment_succeeded,
@@ -480,7 +435,6 @@ init {
 
                     }
                     else if (selectedPosition == lenghtOfAvailBanks){
-                        Log.d("laterr","selected")
                         val intent = Intent(context, paylater::class.java)
                         intent.putExtra("order_details",order_details)
                         bottomSheetController.dialog!!.dismiss()
@@ -514,11 +468,10 @@ init {
                         var answer = JSONObject(json.replace("\n","").replace("\r",""))
                         val url:String = "$url/tokenize/validate"
                         val mediaTypeJson = "application/json; charset=utf-8".toMediaType()
-                        Log.d("dasd",answer.toString())
                         val request = Request.Builder().url(url).post(answer.toString().toRequestBody(mediaTypeJson)).build()
                         client.newCall(request).enqueue(object : Callback {
                             override fun onFailure(call: Call, e: IOException) {
-                                Log.d("Failedd",e.toString())
+                                Log.d("Failed",e.toString())
                             }
 
                             override fun onResponse(call: Call, response: Response) {
@@ -541,14 +494,28 @@ init {
                                         ).toString()
                                     }
                                     val json_object = JSONObject(decrypted_data)
+
                                     val validatetoken:String = json_object.optString("validate_token")
-                                    Log.d("json_ob", jsonObject.toString())
-                                    Log.d("token",validatetoken)
-                                    Log.d("selected position",selectedPosition.toString())
-                                    Log.d("items",myItemModel!!.size.toString())
+
+
                                     activity.runOnUiThread {
                                         kotlin.run {
+                                            if (jsonObject.optJSONObject("result").optString("result_code") != "000"){
+                                                if (bottomSheetController.language == "en") {
+                                                    Toast.makeText(activity,jsonObject.optJSONObject("result").optString("result_message_en")
+                                                    ,Toast.LENGTH_SHORT).show()
+                                                    bottomSheetController.progressbar.visibility = View.GONE
+                                                    return@runOnUiThread
+                                                }
+                                                else{
+                                                    Toast.makeText(activity,jsonObject.optJSONObject("result").optString("result_message_kh")
+                                                        ,Toast.LENGTH_SHORT).show()
+                                                    bottomSheetController.progressbar.visibility = View.GONE
 
+                                                    return@runOnUiThread
+
+                                                }
+                                            }
                                             val otp = otp(myItemModel[selectedPosition].imageString, myItemModel[selectedPosition].bankName,myItemModel[selectedPosition].fee,
                                                 activity,validatetoken,bottomSheetController.bankIdList[selectedPosition-1].split("$$$")[0]
                                                 ,bottomSheetController,payment_succeeded,language,bottomSheetController.paymentConfirmBtn,bottomSheetController.sessionId,

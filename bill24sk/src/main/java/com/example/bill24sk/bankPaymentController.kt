@@ -74,13 +74,7 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
         var json:String
         val data = data()
         val secretKey = data.makePbeKey("admin".toCharArray())
-        val a = NetworkInterface.getNetworkInterfaces()
-            .toList()
-            .find { networkInterface -> networkInterface.name.equals("wlan0", ignoreCase = true) }
-            ?.hardwareAddress
-            ?.joinToString(separator = ":") { byte -> "%02X".format(byte)
-            }
-            Log.d("MacAddresss",a.toString())
+
 //        val wifiMan =
 //            activity.applicationContext!!.getSystemService(Context.WIFI_SERVICE) as WifiManager
 //        val wifiInf = wifiMan.connectionInfo
@@ -224,3 +218,4 @@ bottomSheetController: bottomSheetController,socketID:String) : BottomSheetDialo
         socket.disconnect()
     }
 }
+

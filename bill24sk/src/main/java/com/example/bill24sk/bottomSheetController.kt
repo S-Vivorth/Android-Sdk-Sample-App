@@ -87,34 +87,8 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
 
     override fun onResume() {
         super.onResume()
-        Log.d("Resumee","sad")
         bankPaymentIsOpened = false
     }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (hidden == true) {
-            Log.d("falsee","dsad")
-        }
-        else{
-            Log.d("falseee","das")
-        }
-    }
-
-//    override fun onPause() {
-//        super.onPause()
-//        Log.d("Pausee","asd")
-//        bankPaymentIsOpened = true
-//        hidebutton.performClick()
-//    }
-
-
-//    override fun onStart() {
-//        super.onStart()
-//        socket()
-//    }
-
-
 
     fun socket(){
         val data = data()
@@ -149,7 +123,6 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
                     activity.startActivity(Intent(activity,continue_shopping::class.java))
                     supportFragmentManager.beginTransaction().detach(this).commit()
 
-                    Log.d("das","das")
                 }
                     socket.on("payment_processing", Emitter.Listener {
                         activity.runOnUiThread {
@@ -167,14 +140,7 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
                                     ipAddress shr 24 and 0xff
                                 )
 
-                                Log.d("bankPaymentIsOpenedBtm",bankPaymentIsOpened.toString())
-                                    val a = NetworkInterface.getNetworkInterfaces()
-                                        .toList()
-                                        .find { networkInterface -> networkInterface.name.equals("wlan0", ignoreCase = true) }
-                                        ?.hardwareAddress
-                                        ?.joinToString(separator = ":") { byte -> "%02X".format(byte)
-                                        }
-                                    Log.d("MacAddress",a.toString())
+
                                 if (it[0].toString() != socket.id().toString()) {
 
                                     Log.d("it[0]",it.toString())
@@ -189,7 +155,6 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
                         activity.runOnUiThread {
                             kotlin.run {
                                 socket.disconnect()
-                                Log.d("dataaa",Arrays.toString(it))
                                 val jsonObject = JSONObject(it[0].toString())
                                 val trans_id = jsonObject.optJSONObject("tran_data").optString("trans_id")
                                 val data = data()
@@ -224,7 +189,6 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
 
                                     override fun onResponse(call: Call, response: Response) {
                                         val responses = response.body!!.string()
-                                        Log.d("responsee",responses)
                                         val jsonObject = JSONObject(responses)
                                         val encrypted_data:String = jsonObject.getJSONObject("data").optString("encrypted_data")
                                         try {
@@ -240,7 +204,6 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
                                                     Base64.decode(encrypted_data,Base64.DEFAULT)
                                                 ).toString()
                                             }
-                                            Log.d("Decryptedd",decrypted_data.toString())
                                             val decryptJson = JSONObject(decrypted_data)
                                             activity.runOnUiThread {
                                                 kotlin.run {
@@ -267,9 +230,6 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
                                                         payment_succeeded_dialog.pmMethodValue.text = decryptJson.optString("bank_name_en")
 
                                                     }
-//                                                    payment_succeeded_dialog.orderIdValue.typeface = custom_font
-//                                                    payment_succeeded_dialog.bankRefvalue.typeface = custom_font
-//                                                    payment_succeeded_dialog.totalValue.typeface = custom_font
                                                     payment_succeeded_dialog.orderIdValue.text = "#"+decryptJson.optString("order_ref")
 
                                                     payment_succeeded_dialog.bankRefvalue.text = decryptJson.optString("bank_ref")
@@ -336,12 +296,6 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
         return view
     }
 
-//    override fun onStop() {
-//        super.onStop()
-//        bankPaymentIsOpened = true
-//        hidebutton.performClick()
-//        Log.d("dasd","dasda")
-//    }
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState!=null) {
@@ -370,19 +324,6 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
         else{
             url = "http://203.217.169.102:60096"
         }
-        try {
-            val a = NetworkInterface.getNetworkInterfaces()
-                .toList()
-                .find { networkInterface -> networkInterface.name.equals("wlan0", ignoreCase = true) }
-                ?.hardwareAddress
-                ?.joinToString(separator = ":") { byte -> "%02X".format(byte)
-                }
-            Log.d("MacAddress",a.toString())
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            null
-        }
-
         switchbutton.isEnabled = false
         progressbar.visibility = View.VISIBLE
         progressbar.bringToFront()
@@ -422,8 +363,6 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
 
                 client.newCall(request).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
-                        Log.d("Failedd", "${e}")
-                        println("Faileddd: ${e.localizedMessage}")
                         activity.runOnUiThread {
                             kotlin.run {
                                 Toast.makeText(activity,e.localizedMessage!!.toString(),Toast.LENGTH_SHORT).show()
@@ -454,7 +393,7 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
                             jsonObject.getJSONObject("data").optString("encrypted_data")
 
                         Log.d(
-                            "dataa",
+                            "data",
                             "${jsonObject.getJSONObject("data").optString("encrypted_data")}"
                         )
                         try {
@@ -544,11 +483,15 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
                                         bank_name = json.optString("bank_name_kh")
                                     }
                                 }
+                                var fee = json.optDouble("fee").toString()  + "0 USD"
+                                if (json.optString("bank_id") == "pay_later") {
+                                    fee = ""
+                                }
                                 itemModel.add(
                                     itemModel(
                                         json.optString("bank_logo"),
                                         bank_name,
-                                        json.optDouble("fee").toString() + "0 USD"
+                                        fee
                                     )
                                 )
                             }
@@ -581,7 +524,6 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
                                 }
                             }
                             if (existingAcc.length() > 0) {
-                                Log.d("stylee",pmJson.optJSONObject("style").toString())
                                 savedAccLabelColor = pmJson.optJSONObject("style")!!
                                     .optJSONObject("saved_account_label")!!
                                     .optString("text_color")
@@ -628,7 +570,6 @@ open class bottomSheetController(supportFragmentManager: FragmentManager, paylat
                                         )
                                     )
                                     bankIdList.add(json.optString("bank_id")+"$$$"+json.optString("tokenize_id"))
-
                                 }
                                 val adapter = banksAdapter(
                                     supportFragmentManager,

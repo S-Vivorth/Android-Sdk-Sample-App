@@ -57,7 +57,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:layout_toLeftOf="@+id/radioBox"
-            android:text="0.00 USD"
+            android:text="0.000 USD"
             android:textAlignment="textEnd"
             android:textColor="#000000" />
 
