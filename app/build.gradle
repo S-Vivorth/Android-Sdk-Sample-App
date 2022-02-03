@@ -2,10 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions' // to automatically call without findbyid
-
 }
-
-
 
 android {
     compileSdk 31
