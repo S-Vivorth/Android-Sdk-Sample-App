@@ -51,7 +51,7 @@ dependencies {
     debugImplementation 'com.example.my_flutter:flutter_debug:1.0'
     profileImplementation 'com.example.my_flutter:flutter_profile:1.0'
     releaseImplementation 'com.example.my_flutter:flutter_release:1.0'
-    api project(path: ':bill24sk')
+    api project(path: ':bill24sdk')
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
 
 }
