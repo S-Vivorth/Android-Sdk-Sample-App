@@ -96,14 +96,14 @@ public class Main extends AppCompatActivity {
                         "        \"order_ref\":\"%s\",\n" +
                         "        \"payment_fail_url\": \"payment/fail\",\n" +
                         "        \"payment_cancel_url\": \"payment/cancel\",\n" +
-                        "        \"continue_shopping_url\": \"payment/cancel\"\n" +
+                        "        \"continue_shopping_url\": \"http://localhost:8090/order\"\n" +
                         "    }",orderRef.getText()) ;
                 try {
                     JSONObject jsonObject = new JSONObject(orderDetailsJson);
                     MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-                    Request request = new Request.Builder().header("token","f91d077940cf44ebbb1b6abdebce0f0a")
+                    Request request = new Request.Builder().header("Authorization","Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJQYXltZW50R2F0ZXdheSIsInN1YiI6IkVEQyIsImhhc2giOiJCQ0ZEQzE1MC0zMjRGLTQzRjQtQkQ3Qi0zMTVGN0Y5NDM3NDAifQ.OZ9AqnbRucNmVlJzQt6kqkRjDDDPjMAN81caYwqKuX4")
                             .header("Accept","application/json")
-                            .url("https://checkoutapi-demo.bill24.net/order/init")
+                            .url("http://203.217.169.102:50209/order/create/v1")
                             .post(RequestBody.create(mediaType,jsonObject.toString()))
                             .build();
                     client.newCall(request).enqueue(new Callback() {
@@ -125,8 +125,9 @@ public class Main extends AppCompatActivity {
                                         if (sessionId != "null") {
                                             bottomSheetController bottomSheetController =
                                                     new bottomSheetController(getSupportFragmentManager(),
+                                                            new pay_later(),
                                                             sessionId,
-                                                            "W/GkvceL7nCjOF/v+fu5MA+epIQMXMJedMeXvbvEn7I=",
+                                                            "fmDJiZyehRgEbBJTkXc7AQ==",
                                                             Main.this,
                                                             new payment_succeeded(),
                                                             language,

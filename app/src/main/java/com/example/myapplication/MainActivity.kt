@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         "order_ref":"${binding.orderRef.text}",
         "payment_fail_url": "payment/fail",
         "payment_cancel_url": "payment/cancel",
-        "continue_shopping_url": "payment/cancel"
+        "continue_shopping_url": "http://localhost:8090/order"
     }
         """.trimIndent()
             val jsonObject = JSONObject(orderDetailsJson)
