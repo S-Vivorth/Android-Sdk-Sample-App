@@ -74,12 +74,8 @@ public class Main extends AppCompatActivity {
                         "        \"language\": \"km\",\n" +
                         "        \"order_items\": [\n" +
                         "            {\n" +
-                        "                \"item_name\": \"Men T-Shirt\",\n" +
-                        "                \"quantity\": 1,\n" +
-                        "                \"price\": 1,\n" +
-                        "                \"amount\": 1,\n" +
-                        "                \"item_ref\": \"P1001\",\n" +
-                        "                \"discount_amount\": 0\n" +
+                        "                \"consumer_code\": \"001\",\n" +
+                        "                \"amount\": 10\n" +
                         "            }\n" +
                         "        ],\n" +
                         "        \"payment_success_url\": \"/payment/success\",\n" +
