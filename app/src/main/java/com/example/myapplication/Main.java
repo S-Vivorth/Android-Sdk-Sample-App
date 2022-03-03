@@ -74,7 +74,7 @@ public class Main extends AppCompatActivity {
                         "        \"language\": \"km\",\n" +
                         "        \"order_items\": [\n" +
                         "            {\n" +
-                        "                \"consumer_code\": \"001\",\n" +
+                        "                \"item_ref\": \"001\",\n" +
                         "                \"amount\": 10\n" +
                         "            }\n" +
                         "        ],\n" +
