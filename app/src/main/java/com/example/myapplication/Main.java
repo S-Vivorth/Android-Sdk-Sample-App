@@ -33,7 +33,7 @@ public class Main extends AppCompatActivity {
     Button button;
     EditText orderRef;
     // environment must be "uat" or "prod" only
-    String environtment = "prod";
+    String environtment = "uat";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
