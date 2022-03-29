@@ -39,7 +39,7 @@ class payment_succeeded : AppCompatActivity() {
 
         val request = Request.Builder().header("Authorization","Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJQYXltZW50R2F0ZXdheSIsInN1YiI6IkVEQyIsImhhc2giOiJCQ0ZEQzE1MC0zMjRGLTQzRjQtQkQ3Qi0zMTVGN0Y5NDM3NDAifQ.OZ9AqnbRucNmVlJzQt6kqkRjDDDPjMAN81caYwqKuX4")
             .header("Accept","application/json")
-            .url(url+"/transaction/verify").post(answer.toString().toRequestBody(mediaTypeJson))
+            .url(url+"/transaction/verify/v1").post(answer.toString().toRequestBody(mediaTypeJson))
             .build()
         client.newCall(request).enqueue(object : Callback{
             override fun onFailure(call: Call, e: IOException) {
