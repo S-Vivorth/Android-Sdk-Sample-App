@@ -15,14 +15,14 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:icon,android:label,android:roundIcon">
         <activity
-            android:name=".homescreen"
+            android:name="com.bill24.myapplication.homescreen"
             android:exported="false" />
 
         <activity
-            android:name=".payment_succeeded"
+            android:name="com.bill24.myapplication.payment_succeeded"
             android:exported="false" />
         <activity
-            android:name=".pay_later"
+            android:name="com.bill24.myapplication.pay_later"
             android:exported="true" />
         <activity
             android:name="io.flutter.embedding.android.FlutterActivity"
@@ -30,7 +30,7 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Main"
+            android:name="com.bill24.myapplication.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

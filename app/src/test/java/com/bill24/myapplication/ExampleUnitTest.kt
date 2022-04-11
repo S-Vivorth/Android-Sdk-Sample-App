@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.bill24.myapplication
 
 import org.junit.Test
 

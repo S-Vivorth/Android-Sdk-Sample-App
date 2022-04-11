@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.bill24.myapplication
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -73,7 +73,7 @@ class payment_succeeded : AppCompatActivity() {
 
         })
         binding.continueBtn.setOnClickListener {
-            startActivity(Intent(applicationContext,homescreen::class.java))
+            startActivity(Intent(applicationContext, homescreen::class.java))
             finish()
         }
 

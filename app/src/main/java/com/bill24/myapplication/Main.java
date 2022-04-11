@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.bill24.myapplication;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +27,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import com.example.bill24sk.bottomSheetController;
+
 public class Main extends AppCompatActivity {
     String language = "en";
     String sessionId;
@@ -74,7 +76,7 @@ public class Main extends AppCompatActivity {
                         "        \"language\": \"km\",\n" +
                         "        \"order_items\": [\n" +
                         "            {\n" +
-                        "                \"item_ref\": \"001\",\n" +
+                        "                \"consumer_code\": \"001\",\n" +
                         "                \"amount\": 10\n" +
                         "            }\n" +
                         "        ],\n" +
@@ -119,17 +121,17 @@ public class Main extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         if (sessionId != "null") {
-                                            bottomSheetController bottomSheetController =
-                                                    new bottomSheetController(getSupportFragmentManager(),
-                                                            new pay_later(),
-                                                            sessionId,
-                                                            "fmDJiZyehRgEbBJTkXc7AQ==",
-                                                            Main.this,
-                                                            new payment_succeeded(),
-                                                            language,
-                                                            new homescreen(),
-                                                            environtment);
-                                            bottomSheetController.show(getSupportFragmentManager(),"sdk_bottomsheet");
+//                                            paymentSdk paymentSdk =
+//                                                    new paymentSdk(getSupportFragmentManager(),
+//                                                            new pay_later(),
+//                                                            sessionId,
+//                                                            "fmDJiZyehRgEbBJTkXc7AQ==",
+//                                                            Main.this,
+//                                                            new payment_succeeded(),
+//                                                            language,
+//                                                            new homescreen(),
+//                                                            environtment);
+//                                            paymentSdk.show(getSupportFragmentManager(),"sdk_bottomsheet");
                                         }
                                         else{
                                             Toast.makeText(getApplicationContext(),checkOutObject.optString("message"),Toast.LENGTH_SHORT).show();
@@ -151,3 +153,4 @@ public class Main extends AppCompatActivity {
         });
     }
 }
+

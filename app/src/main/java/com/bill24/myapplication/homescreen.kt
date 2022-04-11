@@ -1,10 +1,9 @@
-package com.example.myapplication
+package com.bill24.myapplication
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.myapplication.databinding.ActivityHomescreenBinding
-import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.R
 import kotlinx.android.synthetic.main.activity_homescreen.*
 
 class homescreen : AppCompatActivity() {
@@ -13,7 +12,7 @@ class homescreen : AppCompatActivity() {
 
         setContentView(R.layout.activity_homescreen)
         toCheckoutBtn.setOnClickListener {
-            startActivity(Intent(applicationContext,Main::class.java))
+            startActivity(Intent(applicationContext, Main::class.java))
             finish()
         }
     }

@@ -1,19 +1,12 @@
-package com.example.myapplication
+package com.bill24.myapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
-import androidx.viewbinding.ViewBinding
-import androidx.viewbinding.ViewBindings
-import com.example.bill24sk.MainActivity
-import com.example.bill24sk.bottomSheetController
+import com.bill24.paymentSdk.paymentSdk
 import com.example.myapplication.databinding.ActivityMainBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import io.flutter.embedding.android.FlutterActivity
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -70,12 +63,8 @@ class MainActivity : AppCompatActivity() {
         "language": "km",
         "order_items": [
             {
-                "item_name": "Men T-Shirt",
-                "quantity": 1,
-                "price": 1,
-                "amount": 1,
-                "item_ref": "P1001",
-                "discount_amount": 0
+                "consumer_code": "001",
+                "amount": 10
             }
         ],
         "payment_success_url": "/payment/success",
@@ -97,9 +86,9 @@ class MainActivity : AppCompatActivity() {
         """.trimIndent()
             val jsonObject = JSONObject(orderDetailsJson)
             val mediaTypeJson = "application/json; charset=utf-8".toMediaType()
-            val request = Request.Builder().header("token","f91d077940cf44ebbb1b6abdebce0f0a")
+            val request = Request.Builder().header("Authorization","Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJQYXltZW50R2F0ZXdheSIsInN1YiI6IkVEQyIsImhhc2giOiJCQ0ZEQzE1MC0zMjRGLTQzRjQtQkQ3Qi0zMTVGN0Y5NDM3NDAifQ.OZ9AqnbRucNmVlJzQt6kqkRjDDDPjMAN81caYwqKuX4")
                 .header("Accept","application/json")
-                .url("https://checkoutapi-demo.bill24.net/order/init")
+                .url("http://203.217.169.102:50209/order/create/v1")
                 .post(jsonObject.toString().toRequestBody(mediaTypeJson))
                 .build()
             client.newCall(request).enqueue(object : Callback {
@@ -111,17 +100,21 @@ class MainActivity : AppCompatActivity() {
                     val responses = response.body!!.string()
                     Log.d("repp",responses)
                     val checkoutObject = JSONObject(responses)
-
+                    if (checkoutObject.optString("code") != "000") {
+                        return
+                    }
                     sessionId = checkoutObject.optJSONObject("data").optString("session_id")
                     runOnUiThread {
                         kotlin.run {
                     if (sessionId!="null") {
 
-                                val bottomsheetFrag = bottomSheetController(supportFragmentManager = supportFragmentManager,paylater = pay_later(),
+                                val bottomsheetFrag = paymentSdk(supportFragmentManager = supportFragmentManager,paylater = pay_later(),
                                     sessionId = "$sessionId",
-                                    clientID = "W/GkvceL7nCjOF/v+fu5MA+epIQMXMJedMeXvbvEn7I=", activity = this@MainActivity
+                                    clientID = "fmDJiZyehRgEbBJTkXc7AQ==", activity = this@MainActivity
                                     ,payment_succeeded = payment_succeeded(),language = language,homescreen(),
-                                environment = environment)
+                                environment = environment){
+
+                                }
 
                                 bottomsheetFrag.show(supportFragmentManager,"sdk_bottomsheet")
                             }
