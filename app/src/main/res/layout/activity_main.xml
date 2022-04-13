@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="example.myapplication.Main">
+    tools:context="com.bill24.myapplication.Main">
 
     <EditText
         android:textCursorDrawable="@null"
@@ -54,7 +54,6 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-
         android:layout_centerInParent="true"
         android:layout_marginStart="25dp"
         android:layout_marginTop="20dp"

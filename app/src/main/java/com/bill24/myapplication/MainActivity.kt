@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
                                     sessionId = "$sessionId",
                                     clientID = "fmDJiZyehRgEbBJTkXc7AQ==", activity = this@MainActivity
                                     ,payment_succeeded = payment_succeeded(),language = language,homescreen(),
-                                environment = environment){
+                                environment = environment,theme_mode = ""){
 
                                 }
 
