@@ -77,12 +77,12 @@ public class Main extends AppCompatActivity {
                         "        \"order_items\": [\n" +
                         "            {\n" +
                         "                \"consumer_code\": \"001\",\n" +
-                        "                \"amount\": 10\n" +
+                        "                \"amount\": 1.2\n" +
                         "            }\n" +
                         "        ],\n" +
                         "        \"payment_success_url\": \"/payment/success\",\n" +
                         "        \"currency\": \"USD\",\n" +
-                        "        \"amount\": 1,\n" +
+                        "        \"amount\": 1.2,\n" +
                         "        \"pay_later_url\": \"/payment/paylater\",\n" +
                         "        \"shipping_address\": {\n" +
                         "            \"province\": \"Phnom Penh\",\n" +
