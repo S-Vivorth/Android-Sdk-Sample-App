@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="150dp"
+    android:layout_centerInParent="true"
+    android:background="#ffffff"
+    android:id="@+id/pm_processing_relative"
+    >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <TextView
+
+            android:id="@+id/processingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="false"
+
+
+            android:layout_marginBottom="20dp"
+            android:text="Payment is in processing"
+            android:textColor="#121212"
+            android:textSize="20dp" />
+
+        <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:indeterminateTint="#121212"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/processingText"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+</RelativeLayout>
