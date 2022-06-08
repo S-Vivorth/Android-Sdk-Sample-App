@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
+import com.bill24.paymentSdk.paymentSdk
 import com.example.androidsdksampleapp.databinding.ActivityMainBinding
-import com.example.bill24sk.bottomSheetController
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -38,12 +38,12 @@ class checkOutKotlin : AppCompatActivity() {
 
         binding.button.setOnClickListener {
             // function to create sessionId and call Sdk
-            createSessionId()
+            createSaleOrder()
         }
 
     }
 
-    fun createSessionId(){
+    fun createSaleOrder(){
 
         //create okhttp instance
         val client = OkHttpClient()
@@ -146,14 +146,14 @@ class checkOutKotlin : AppCompatActivity() {
             // continue_shopping is the activity which will be navigated to, when user press continue shopping button
             // environment is the environment that you want to use
 
-            val bottomsheetFrag = bottomSheetController(supportFragmentManager = supportFragmentManager,paylater = pay_later(),
+            val paymentSdk = paymentSdk(supportFragmentManager = supportFragmentManager,paylater = pay_later(),
                 sessionId = sessionId,
                 clientID = clientId, activity = this@checkOutKotlin
                 ,payment_succeeded = payment_succeeded(),language = language,continue_shopping =  homescreen()
             ,environment = environment)
 
             // to call sdk screen
-            bottomsheetFrag.show(supportFragmentManager,"bottomsheetsdk")
+            paymentSdk.show(supportFragmentManager,"paymentSdk")
         }
 
         else{

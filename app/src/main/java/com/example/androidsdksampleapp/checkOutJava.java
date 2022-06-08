@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bill24.paymentSdk.paymentSdk;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,7 +26,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import com.example.bill24sk.bottomSheetController;
 public class checkOutJava extends AppCompatActivity {
     String language = "en";
     String sessionId;
@@ -35,7 +36,7 @@ public class checkOutJava extends AppCompatActivity {
     String clientId = "W/GkvceL7nCjOF/v+fu5MA+epIQMXMJedMeXvbvEn7I=";
     String token = "f91d077940cf44ebbb1b6abdebce0f0a";
     // environment must be either "uat" or "prod" only
-    String environtment = "prod";
+    String environtment = "uat";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +62,13 @@ public class checkOutJava extends AppCompatActivity {
             public void onClick(View v) {
 
                 // function to create sessionId and call Sdk
-                createSessionId();
+                createSaleOrder();
 
             }
         });
     }
 
-    void createSessionId(){
+    void createSaleOrder(){
 
         //create okhttp instance
         OkHttpClient client = new OkHttpClient();
@@ -169,8 +170,8 @@ public class checkOutJava extends AppCompatActivity {
             // language is the string that specify the language. Language can be "en" or "kh" only.
             // continue_shopping is the activity which will be navigated to, when user press continue shopping button
             // environment is the environment that you want to use
-            bottomSheetController bottomSheetController =
-                    new bottomSheetController(getSupportFragmentManager(),
+            paymentSdk paymentSdk =
+                    new paymentSdk(getSupportFragmentManager(),
                             new pay_later(),
                             sessionId,
                             clientId,
@@ -181,7 +182,7 @@ public class checkOutJava extends AppCompatActivity {
                             environtment);
 
             // to call sdk screen
-            bottomSheetController.show(getSupportFragmentManager(), "bottomsheet");
+            paymentSdk.show(getSupportFragmentManager(), "paymentSdk");
         } else {
             Toast.makeText(getApplicationContext(), checkOutObject.optString("message"), Toast.LENGTH_SHORT).show();
         }

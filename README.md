@@ -49,7 +49,7 @@ In your checkout screen:
 
 **Kotlin**
 ```kotlin
-fun createSessionId(){
+fun createSaleOrder(){
 
         //create okhttp instance if you use okhttp for networking
         val client = OkHttpClient()
@@ -168,7 +168,7 @@ fun createSessionId(){
 **Java**
 
 ```java
-    void createSessionId(){
+    void createSaleOrder(){
 
         //create okhttp instance
         OkHttpClient client = new OkHttpClient();
